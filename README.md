@@ -1,174 +1,434 @@
-# Unified Assessment Platform
+# Unified Assessment Management Platform (UAMP)
 
-A full-stack Assessment Management System built using:
+A **full-stack Unified Assessment Management System** designed for higher education institutions to create, deliver, monitor, and evaluate online assessments with advanced **AI-powered grading, proctoring, and academic integrity analysis**.
 
--   Backend: Node.js, Express.js, MongoDB
--   Frontend: React (Vite), Ant Design, TailwindCSS
--   Authentication: JWT-based authentication
--   Role-based system: Admin, Instructor, Student
+The platform integrates **exam management, behavioral analytics, AI evaluation, and fraud detection** into a single scalable architecture.
 
-------------------------------------------------------------------------
+---
 
-# Project Structure
+# Overview
 
-    unified-assessment-platform/
-    │
-    ├── backend/     # Express.js API
-    └── frontend/    # React (Vite) Application
+The Unified Assessment Management Platform provides an **end-to-end digital assessment lifecycle**, enabling institutions to conduct secure and intelligent online examinations.
 
-------------------------------------------------------------------------
+### Key capabilities
 
-## Backend Folder Contains
+* Online assessment creation and delivery
+* AI-powered answer evaluation
+* Real-time exam monitoring and anomaly detection
+* Behavioral biometric analysis
+* Academic integrity and fraud detection
+* Advanced analytics and reporting dashboards
+* Real-time notifications and collaboration
 
--   server.js (Application entry point)
--   config/dbconfig.js (MongoDB configuration)
--   routes/
--   controllers/
--   middleware/
--   .env (Environment variables)
+The system supports multiple roles including **students, instructors, and administrators**, each with specialized capabilities.
 
-------------------------------------------------------------------------
+---
 
-## Frontend Folder Contains
+# Architecture
 
--   React source code
--   Vite configuration
--   .env (API base URL)
+The platform follows a **modern full-stack architecture**.
 
-------------------------------------------------------------------------
-
-# Step 1: Setup MongoDB
-
-You can run MongoDB in two ways:
-
-## Option A: Install MongoDB Locally
-
-1.  Download MongoDB Community Edition:
-    https://www.mongodb.com/try/download/community
-2.  Install MongoDB.
-3.  Start MongoDB service.
-4.  Default connection string:
-
-```{=html}
-<!-- -->
 ```
-    mongodb://localhost:27017/uap_db
+React SPA (localhost:3000)
+        ↓ HTTP / WebSocket
+Axios + Socket.IO
+        ↓
+Express.js REST API (localhost:5000)
+        ↓
+Mongoose ODM
+        ↓
+MongoDB (localhost:27017/uap_db)
+```
 
-------------------------------------------------------------------------
+Frontend communicates with the backend using **REST APIs and WebSockets**, while MongoDB serves as the primary database for persistent storage.
 
-## Option B: Run MongoDB Using Docker (Recommended)
+---
 
-Run in PowerShell:
+# Technology Stack
 
-    docker run -d ^
-      --name mongodb ^
-      -p 27017:27017 ^
-      -e MONGO_INITDB_ROOT_USERNAME=admin ^
-      -e MONGO_INITDB_ROOT_PASSWORD=admin123 ^
-      mongo
+| Layer                   | Technology                        |
+| ----------------------- | --------------------------------- |
+| Frontend                | React 18, Vite                    |
+| UI Framework            | Ant Design, TailwindCSS           |
+| Routing                 | React Router v6                   |
+| Backend                 | Node.js, Express.js               |
+| Database                | MongoDB with Mongoose ODM         |
+| Real-Time Communication | Socket.IO                         |
+| AI Evaluation           | Google Gemini AI, OpenAI fallback |
+| Authentication          | JWT (90-day tokens), bcrypt       |
+| Code Editor             | Monaco Editor                     |
+| Data Visualization      | Recharts, React Force Graph 2D    |
+| Testing                 | Jest, Supertest, Playwright       |
 
-Docker connection string:
+---
 
-    mongodb://admin:admin123@localhost:27017/uap_db?authSource=admin
+# User Roles
 
-Verify container:
+### Student
 
-    docker ps
+* Take scheduled online assessments
+* Submit answers and coding solutions
+* View results and analytics
+* Access personal dashboard
 
-------------------------------------------------------------------------
+### Instructor
 
-# Step 2: Backend Setup
+* Create and manage assessments
+* Evaluate student submissions
+* Generate questions using AI
+* Monitor exam integrity and analytics
 
-Navigate to backend folder:
+### Administrator
 
-    cd backend
+* Manage platform users
+* Monitor system activity and anomalies
+* Configure platform settings
+* Investigate academic integrity violations
 
-Install dependencies:
+---
 
-    npm install
+# Core System Modules
 
-Run backend server:
+## Authentication and User Management
 
-    npm run dev
+Secure authentication using **JWT-based authorization** with role-based access control.
 
-Backend will start at:
+Features include:
 
-    http://localhost:5000
+* User registration and login
+* Password encryption using bcrypt
+* Role-based access permissions
+* Account activation and suspension
+* Per-user AI API key storage
 
-Health check endpoint:
+### Typing Baseline Biometric
 
-    http://localhost:5000/api/health
+The system records typing behavior to build a **behavioral biometric profile**, including:
 
-------------------------------------------------------------------------
+* Typing speed
+* Keystroke timing
+* Typing rhythm
 
-# Step 3: Frontend Setup
+This helps verify identity during assessments.
 
-Navigate to frontend folder:
+---
 
-    cd frontend
+# Assessment Engine
 
-Install dependencies:
+The assessment engine enables instructors to design and manage exams.
 
-    npm install
+### Supported Question Types
 
-Run frontend:
+* Multiple Choice (MCQ)
+* Multiple Answer
+* Short Answer
+* Long Answer / Essay
+* Programming / Coding
 
-    npm run dev
+### Assessment Configuration
 
-Frontend runs at:
+* Start and expiration scheduling
+* Student enrollment
+* Question randomization
+* Attempt limits
+* Passing score configuration
 
-    http://localhost:3000
+### Adaptive Difficulty
 
-OR
+The platform dynamically adjusts question difficulty based on student performance.
 
-    http://localhost:5173
+```
+Correct answer → harder question
+Incorrect answer → easier question
+```
 
-------------------------------------------------------------------------
+This creates personalized learning assessments.
 
-# Environment Variables
+---
 
-## Backend .env
+# Student Exam Interface
 
-    PORT=5000
-    MONGODB_URI=mongodb://localhost:27017/uap_db
-    JWT_SECRET=dev_secret_key
-    JWT_EXPIRE=24h
-    NODE_ENV=development
+Students take assessments through a **dedicated proctored exam interface**.
 
-If using Docker MongoDB:
+Key features include:
 
-    MONGODB_URI=mongodb://admin:admin123@localhost:27017/uap_db?authSource=admin
+* Question navigation
+* Per-question timer tracking
+* Real-time telemetry monitoring
+* Coding environment with Monaco Editor
 
-------------------------------------------------------------------------
+Coding questions support:
 
-## Frontend .env
+* syntax highlighting
+* execution environments
+* automated test case evaluation
 
-    VITE_API_URL=http://localhost:5000/api
+---
 
-------------------------------------------------------------------------
+# Proctoring and Anomaly Detection
 
-# Full Startup Order
+The system monitors student behavior during exams to detect suspicious activity.
 
-1.  Start MongoDB (Local or Docker)
-2.  Start Backend → npm run dev
-3.  Start Frontend → npm run dev
-4.  Open browser → http://localhost:3000
+### Telemetry Signals Tracked
 
-------------------------------------------------------------------------
+* Tab switching
+* Copy and paste events
+* Window focus loss
+* IP address changes
+* Keystroke dynamics
+* Rapid answering patterns
 
-# Important Note From Side regraing .env files
+### Trust Score Calculation
 
-⚠ This is an internship development project.
+```
+Trust Score =
+100
+- (TabSwitch × 5)
+- (CopyPaste × 10)
+- (IPChange × 20)
+- (FastAnswer × 3)
+```
 
-For simplicity, `.env` files are included in the repository.
+Risk levels:
 
-In real-world production applications:
+| Score | Risk Level |
+| ----- | ---------- |
+| 80+   | Low        |
+| 50–80 | Medium     |
+| <50   | High       |
 
--   `.env` files should NOT be pushed to GitHub.
--   Secrets like database passwords and JWT keys must be kept private.
--   `.env.example` files should be used instead.
+### Exam DNA
 
-Since this project is for development and contains no confidential
-production credentials, `.env` files are included to simplify setup.
+Each exam session generates a unique **SHA-256 behavioral fingerprint** based on telemetry patterns.
 
-------------------------------------------------------------------------
+---
+
+# AI-Powered Evaluation
+
+The platform uses **Google Gemini AI** to automatically evaluate:
+
+* short answers
+* long form essays
+* programming solutions
+
+### Multi-Model Fallback
+
+The system automatically retries evaluation across multiple AI models if one fails.
+
+```
+Gemini Model A
+→ Gemini Model B
+→ Gemini Model C
+→ OpenAI fallback
+```
+
+This ensures reliability and consistent evaluation.
+
+---
+
+# Academic Integrity and Fraud Detection
+
+The system includes advanced mechanisms for detecting cheating and collusion.
+
+### Collusion Detection
+
+Student answers are compared using **Jaccard similarity analysis**.
+
+```
+Similarity = Intersection / Union
+```
+
+If similarity exceeds **85%**, the system flags potential collusion.
+
+---
+
+### Pattern Analysis
+
+Worker threads analyze patterns such as:
+
+* rapid submission clusters
+* impossible geographic travel
+* synchronized answer patterns
+
+These analyses run asynchronously to avoid blocking the main server.
+
+---
+
+# Blockchain-Style Audit Logs
+
+All system activity logs are stored in a **tamper-evident hash chain**.
+
+Each log entry includes:
+
+* previousHash
+* currentHash
+* timestamp
+* action metadata
+
+This ensures audit trails cannot be altered without detection.
+
+### Merkle Tree Verification
+
+Batch audit verification uses **Merkle trees** to validate log integrity efficiently.
+
+---
+
+# Analytics and Reporting
+
+The platform provides detailed analytics dashboards.
+
+### Instructor Analytics
+
+* submission statistics
+* question difficulty metrics
+* average time per question
+* student performance distribution
+
+### Administrator Analytics
+
+* platform usage metrics
+* anomaly monitoring
+* academic integrity reports
+
+### Collusion Network Visualization
+
+Suspicious student relationships are visualized using a **network graph** powered by React Force Graph.
+
+---
+
+# Notifications
+
+Real-time notifications are delivered through **Socket.IO**.
+
+Examples include:
+
+* new assessment availability
+* submission confirmations
+* high-risk anomaly alerts
+* system announcements
+
+---
+
+# Database Models
+
+| Model                  | Purpose                                |
+| ---------------------- | -------------------------------------- |
+| User                   | Authentication, roles, typing baseline |
+| Assessment             | Questions, settings, schedules         |
+| Submission             | Student answers and scores             |
+| AuditLog               | Tamper-evident audit records           |
+| ExamSession            | Telemetry session data                 |
+| Notification           | User notification queue                |
+| ActivityLog            | System activity logs                   |
+| PlatformSettings       | Global configuration                   |
+| Category / Subcategory | Assessment organization                |
+
+---
+
+# API Endpoints
+
+| Group         | Base Path          | Key Operations           |
+| ------------- | ------------------ | ------------------------ |
+| Auth          | /api/auth          | login, register, profile |
+| Assessments   | /api/assessments   | CRUD, enroll             |
+| Submissions   | /api/submissions   | submit, evaluate         |
+| Admin         | /api/admin         | stats, logs              |
+| AI            | /api/ai            | generate, evaluate       |
+| Telemetry     | /api/telemetry     | exam event logging       |
+| Notifications | /api/notifications | fetch, mark read         |
+| Analytics     | /api/analytics     | collusion graph          |
+
+---
+
+# Running the Project
+
+## 1. Start MongoDB
+
+```
+docker run -d --name mongodb -p 27017:27017 mongo
+```
+
+---
+
+## 2. Start Backend
+
+```
+cd backend
+npm install
+```
+
+Create `.env` file:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+GEMINI_API_KEY=your_key
+CLIENT_URL=http://localhost:3000
+```
+
+Start server:
+
+```
+npm run dev
+```
+
+---
+
+## 3. Start Frontend
+
+```
+cd frontend
+npm install
+```
+
+Create `.env` file:
+
+```
+VITE_API_URL=http://127.0.0.1:5000/api
+```
+
+Run development server:
+
+```
+npm run dev
+```
+
+---
+
+# Access Application
+
+```
+Frontend
+http://localhost:3000
+
+Backend API
+http://localhost:5000
+```
+
+---
+
+# Architecture Highlights
+
+* Worker threads for heavy fraud detection workloads
+* Blockchain-style audit logs with hash chaining
+* Merkle tree verification for audit batches
+* Adaptive difficulty assessment engine
+* Multi-model AI fallback architecture
+* Explainable AI (XAI) anomaly explanations
+
+---
+
+# Project Scope
+
+This system contains **over 120 source files** implementing a full lifecycle assessment platform, covering:
+
+* exam creation
+* delivery
+* proctoring
+* AI evaluation
+* fraud detection
+* analytics
+* reporting
+
+The platform is designed as a **scalable academic assessment infrastructure for modern educational institutions**.
